@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kolaweq Pro Trading Desk</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://s3.tradingview.com/tv.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar glass">
+        <div class="brand-block">
+          <div class="logo">KQ</div>
+          <div class="brand-copy">
+            <h1>Kolaweq Trading Room</h1>
+            <p>Фьючерсная панель для красивых скринов как на бирже</p>
+          </div>
+        </div>
+        <div class="ticker-tape" id="ticker-tape">
+          <div class="ticker-row" data-placeholder>
+            <span>Загрузка рыночных данных…</span>
+          </div>
+        </div>
+        <div class="account-summary">
+          <div class="account-item">
+            <span class="label">Баланс</span>
+            <span class="value" id="account-balance">$125,480.00</span>
+          </div>
+          <div class="account-item">
+            <span class="label">Маржа</span>
+            <span class="value" id="account-margin">37.6%</span>
+          </div>
+          <div class="account-item">
+            <span class="label">За сегодня</span>
+            <span class="value positive" id="account-daily">+$2,418.50</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <div class="market-column">
+          <section class="market-toolbar glass">
+            <div class="pair-select">
+              <label for="symbol-select">Торговая пара</label>
+              <select id="symbol-select" class="select">
+                <option value="BINANCE:BTCUSDT" selected>BTC / USDT</option>
+                <option value="BINANCE:ETHUSDT">ETH / USDT</option>
+                <option value="BINANCE:BNBUSDT">BNB / USDT</option>
+                <option value="BINANCE:XRPUSDT">XRP / USDT</option>
+                <option value="BINANCE:SOLUSDT">SOL / USDT</option>
+                <option value="BINANCE:ADAUSDT">ADA / USDT</option>
+              </select>
+            </div>
+            <div class="market-overview">
+              <div>
+                <span class="label">Mark Price</span>
+                <span class="value" id="mark-price">—</span>
+              </div>
+              <div>
+                <span class="label">24ч изменение</span>
+                <span class="value" id="price-change">—</span>
+              </div>
+              <div>
+                <span class="label">24ч объём</span>
+                <span class="value" id="price-volume">—</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="chart-card glass">
+            <header class="card-header">
+              <h2>График TradingView</h2>
+            </header>
+            <div class="chart-container" id="tv_chart_container"></div>
+          </section>
+
+          <section class="market-depth">
+            <div class="orderbook glass">
+              <header class="card-header">
+                <div>
+                  <h3>Стакан заявок</h3>
+                  <p class="muted">10 лучших уровней по обе стороны</p>
+                </div>
+                <div class="live-dot">Live</div>
+              </header>
+              <div class="orderbook-grid">
+                <div class="orderbook-side asks">
+                  <div class="orderbook-head">
+                    <span>Цена</span>
+                    <span>Количество</span>
+                    <span>Сумма</span>
+                  </div>
+                  <div id="asks-list" class="orderbook-rows"></div>
+                </div>
+                <div class="orderbook-side bids">
+                  <div class="orderbook-head">
+                    <span>Цена</span>
+                    <span>Количество</span>
+                    <span>Сумма</span>
+                  </div>
+                  <div id="bids-list" class="orderbook-rows"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="trades glass">
+              <header class="card-header">
+                <div>
+                  <h3>Лента сделок</h3>
+                  <p class="muted">Последние исполнившиеся ордера</p>
+                </div>
+                <div class="live-dot">Live</div>
+              </header>
+              <div class="trades-head">
+                <span>Время</span>
+                <span>Цена</span>
+                <span>Объём</span>
+              </div>
+              <div id="trades-list" class="trades-rows"></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="control-column">
+          <section class="order-entry glass">
+            <header class="card-header">
+              <div>
+                <h2>Форма сделки</h2>
+                <p class="muted">Задайте параметры, как на реальной бирже</p>
+              </div>
+            </header>
+            <form id="order-form" class="order-form">
+              <div class="row">
+                <span class="label">Направление</span>
+                <div class="toggle-group" id="trade-direction">
+                  <input type="radio" name="direction" id="long" value="Long" checked />
+                  <label for="long" class="toggle long">Long</label>
+                  <input type="radio" name="direction" id="short" value="Short" />
+                  <label for="short" class="toggle short">Short</label>
+                </div>
+              </div>
+
+              <div class="row grid-2">
+                <label class="field">
+                  <span>Тип ордера</span>
+                  <select id="order-type" name="orderType" class="select">
+                    <option value="Market">Market</option>
+                    <option value="Limit">Limit</option>
+                    <option value="Stop">Stop</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Плечо</span>
+                  <input type="number" id="leverage" name="leverage" value="10" min="1" max="125" />
+                </label>
+              </div>
+
+              <div class="row grid-2">
+                <label class="field">
+                  <span>Цена входа</span>
+                  <input type="number" id="entry-price" name="entryPrice" step="0.01" placeholder="Например, 26480" required />
+                </label>
+                <label class="field">
+                  <span>Объём (USDT)</span>
+                  <input type="number" id="quantity" name="quantity" step="0.01" value="5000" required />
+                </label>
+              </div>
+
+              <div class="row grid-2">
+                <label class="field">
+                  <span>Stop Loss</span>
+                  <input type="number" id="stop-loss" name="stopLoss" step="0.01" placeholder="Уровень SL" />
+                </label>
+                <label class="field">
+                  <span>Take Profit</span>
+                  <input type="number" id="take-profit" name="takeProfit" step="0.01" placeholder="Уровень TP" />
+                </label>
+              </div>
+
+              <label class="field textarea">
+                <span>Комментарий / Идея</span>
+                <textarea id="notes" name="notes" rows="3" placeholder="Почему вход? Какие сценарии?"></textarea>
+              </label>
+
+              <button type="submit" class="primary-btn">Добавить позицию</button>
+            </form>
+          </section>
+
+          <section class="positions glass">
+            <header class="card-header">
+              <div>
+                <h2>Активные позиции</h2>
+                <p class="muted">Детализация как на реальной бирже</p>
+              </div>
+              <div class="positions-meta">
+                <span id="total-trades" class="meta-value">0</span>
+                <span class="meta-label">Всего</span>
+              </div>
+            </header>
+            <div class="table-wrapper">
+              <table class="positions-table">
+                <thead>
+                  <tr>
+                    <th>Пара</th>
+                    <th>Напр</th>
+                    <th>Вход</th>
+                    <th>Mark</th>
+                    <th>Объём</th>
+                    <th>Плечо</th>
+                    <th>PNL</th>
+                    <th>ROI</th>
+                    <th>SL / TP</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="positions-table"></tbody>
+              </table>
+            </div>
+            <footer class="positions-footer">
+              <div>
+                <span class="label">Long / Short</span>
+                <span id="long-short-ratio" class="value">0 / 0</span>
+              </div>
+              <div>
+                <span class="label">Суммарный PnL</span>
+                <span id="positions-pnl" class="value">$0.00</span>
+              </div>
+            </footer>
+          </section>
+
+          <section class="performance glass">
+            <header class="card-header">
+              <div>
+                <h2>Портфель</h2>
+                <p class="muted">Включает все открытые позиции</p>
+              </div>
+              <button id="pnl-edit-toggle" class="ghost-btn">Режим правки</button>
+            </header>
+            <div class="performance-body">
+              <div class="performance-value" id="floating-pnl">$0.00</div>
+              <div class="performance-sub" id="floating-roi">0.00%</div>
+              <p class="muted">
+                Значения считаются автоматически. В режиме правки можно ввести свои цифры для
+                скриншота — вычисления приостанавливаются.
+              </p>
+            </div>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="footer glass">
+        <div>
+          <span class="label">Сделки для тг-канала</span>
+          <span class="value">Выключайте правку и обновляйте данные перед скрином</span>
+        </div>
+        <div>
+          <span class="label">Автообновление</span>
+          <span class="value">Рынок, стакан и PnL обновляются каждые 5 секунд</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
