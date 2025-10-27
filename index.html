@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Desk Simulator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://s3.tradingview.com/tv.js"></script>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">Kolaweq Exchange</div>
+        <div class="market-selector">
+          <label for="symbol-select">Пара</label>
+          <select id="symbol-select" class="select">
+            <option value="BINANCE:BTCUSDT">BTC / USDT</option>
+            <option value="BINANCE:ETHUSDT">ETH / USDT</option>
+            <option value="BINANCE:BNBUSDT">BNB / USDT</option>
+            <option value="BINANCE:XRPUSDT">XRP / USDT</option>
+            <option value="BINANCE:SOLUSDT">SOL / USDT</option>
+            <option value="BINANCE:ADAUSDT">ADA / USDT</option>
+          </select>
+        </div>
+        <div class="account-overview">
+          <div>
+            <span class="label">Баланс</span>
+            <span class="value" id="account-balance">$12,468.60</span>
+          </div>
+          <div>
+            <span class="label">P&L (день)</span>
+            <span class="value positive">+$248.90</span>
+          </div>
+          <div>
+            <span class="label">Маржа</span>
+            <span class="value">37%</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="chart-panel">
+          <div id="tv_chart_container"></div>
+        </section>
+
+        <section class="order-panel">
+          <h2 class="panel-title">Новая сделка</h2>
+          <form id="order-form" class="order-form">
+            <div class="form-row">
+              <label for="trade-direction">Направление</label>
+              <div class="toggle-group" id="trade-direction">
+                <input type="radio" name="direction" id="long" value="Long" checked />
+                <label for="long" class="toggle long">Long</label>
+                <input type="radio" name="direction" id="short" value="Short" />
+                <label for="short" class="toggle short">Short</label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label for="order-type">Тип ордера</label>
+              <select id="order-type" name="orderType" class="select">
+                <option value="Market">Market</option>
+                <option value="Limit">Limit</option>
+                <option value="Stop">Stop</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="leverage">Плечо</label>
+              <input type="number" id="leverage" name="leverage" value="10" min="1" max="125" />
+            </div>
+
+            <div class="form-row">
+              <label for="entry-price">Цена входа</label>
+              <input type="number" id="entry-price" name="entryPrice" step="0.01" placeholder="Например, 10750" required />
+            </div>
+
+            <div class="grid">
+              <div class="form-row">
+                <label for="stop-loss">Stop Loss</label>
+                <input type="number" id="stop-loss" name="stopLoss" step="0.01" placeholder="Например, 10120" />
+              </div>
+              <div class="form-row">
+                <label for="take-profit">Take Profit</label>
+                <input type="number" id="take-profit" name="takeProfit" step="0.01" placeholder="Например, 11890" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label for="quantity">Объём (USDT)</label>
+              <input type="number" id="quantity" name="quantity" value="5000" step="0.01" />
+            </div>
+
+            <div class="form-row">
+              <label for="notes">Комментарий</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="Опишите идею сделки"></textarea>
+            </div>
+
+            <button type="submit" class="primary-btn">Добавить сделку</button>
+          </form>
+
+          <div class="positions">
+            <h3>Активные сделки</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Пара</th>
+                  <th>Направление</th>
+                  <th>Вход</th>
+                  <th>Объём</th>
+                  <th>Плечо</th>
+                  <th>SL</th>
+                  <th>TP</th>
+                  <th>Комментарий</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="positions-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <footer class="bottom-bar">
+        <div class="bottom-info">
+          <div>
+            <span class="label">Общий профит</span>
+            <span id="profit-display" class="profit-value positive" contenteditable="true">$480.60</span>
+            <span class="note">Нажмите для редактирования и введите своё значение</span>
+          </div>
+          <div class="bottom-stats">
+            <div>
+              <span class="label">Всего сделок</span>
+              <span id="total-trades" class="value">0</span>
+            </div>
+            <div>
+              <span class="label">Long / Short</span>
+              <span id="long-short-ratio" class="value">0 / 0</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
